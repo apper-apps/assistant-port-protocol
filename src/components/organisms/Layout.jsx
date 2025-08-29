@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/organisms/Header";
-import ConversationList from "@/components/organisms/ConversationList";
+import SearchHistory from "@/components/organisms/SearchHistory";
 import { cn } from "@/utils/cn";
 
 const Layout = ({ children, ...headerProps }) => {
@@ -13,18 +13,20 @@ const Layout = ({ children, ...headerProps }) => {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       {/* Header */}
-      <Header 
+<Header 
         onToggleSidebar={toggleSidebar}
-        {...headerProps}
+        searchQuery={headerProps.searchQuery}
+        onSearch={headerProps.onSearch}
+        onClearSearch={headerProps.onClearSearch}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Desktop Sidebar - Static positioned */}
+{/* Desktop Sidebar - Static positioned */}
         <aside className="hidden lg:flex w-80 bg-white border-r border-gray-200 flex-col">
-          <ConversationList 
-            selectedConversationId={headerProps.selectedConversationId}
-            onConversationSelect={headerProps.onConversationSelect}
-            onNewConversation={headerProps.onNewConversation}
+          <SearchHistory 
+            searchHistory={headerProps.searchHistory}
+            onSearch={headerProps.onSearch}
+            currentQuery={headerProps.searchQuery}
           />
         </aside>
 
@@ -52,7 +54,7 @@ const Layout = ({ children, ...headerProps }) => {
                 <div className="h-full flex flex-col">
                   {/* Mobile sidebar header */}
                   <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-gray-900">Диалоги</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">История поиска</h2>
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
@@ -67,16 +69,13 @@ const Layout = ({ children, ...headerProps }) => {
                   
                   {/* Mobile sidebar content */}
                   <div className="flex-1 overflow-hidden">
-                    <ConversationList 
-                      selectedConversationId={headerProps.selectedConversationId}
-                      onConversationSelect={(id) => {
-                        headerProps.onConversationSelect(id);
+                    <SearchHistory 
+                      searchHistory={headerProps.searchHistory}
+                      onSearch={(query) => {
+                        headerProps.onSearch(query);
                         closeSidebar();
                       }}
-                      onNewConversation={() => {
-                        headerProps.onNewConversation();
-                        closeSidebar();
-                      }}
+                      currentQuery={headerProps.searchQuery}
                     />
                   </div>
                 </div>

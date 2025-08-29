@@ -1,28 +1,72 @@
 import { motion } from "framer-motion";
+import React from "react";
+import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
 
-const Loading = ({ type = "default", className = "" }) => {
-  if (type === "conversation") {
+const Loading = ({ type = "default", className = "", size = "md" }) => {
+  const sizeClasses = {
+    sm: "w-4 h-4",
+    md: "w-6 h-6", 
+    lg: "w-8 h-8",
+    xl: "w-12 h-12"
+  };
+
+  if (type === "search") {
     return (
-      <div className={`space-y-4 ${className}`}>
-        {[1, 2, 3].map((i) => (
+      <div className={cn("flex flex-col items-center justify-center gap-4", className)}>
+        <motion.div
+          className="relative"
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+            scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+          }}
+        >
+          <div className="w-16 h-16 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center">
+            <ApperIcon name="Search" size={24} className="text-white" />
+          </div>
+        </motion.div>
+        <div className="text-center">
+          <p className="text-lg font-medium text-gray-700">Поиск товаров...</p>
+          <p className="text-sm text-gray-500">Ищем лучшие предложения от поставщиков</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "spinner") {
+    return (
+      <div className={cn("flex items-center justify-center", className)}>
+        <motion.div
+          className={cn("border-2 border-primary border-t-transparent rounded-full", sizeClasses[size])}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+    );
+  }
+
+if (type === "dots") {
+    return (
+      <div className={cn("flex items-center justify-center gap-1", className)}>
+        {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.1 }}
-            className="animate-pulse"
-          >
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                <div className="space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-full"></div>
-                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+            className={cn("bg-primary rounded-full", sizeClasses[size])}
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.5, 1, 0.5]
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              delay: i * 0.2,
+              ease: "easeInOut"
+            }}
+          />
         ))}
       </div>
     );

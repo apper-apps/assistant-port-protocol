@@ -1,14 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import ChatPage from "@/components/pages/ChatPage";
-
+import SearchPage from "@/components/pages/SearchPage";
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Routes>
-          <Route path="/" element={<ChatPage />} />
-          <Route path="/chat/:conversationId" element={<ChatPage />} />
+<Routes>
+          <Route path="/" element={<SearchPage />} />
+          <Route path="/search/:query?" element={<SearchPage />} />
         </Routes>
         
         <ToastContainer

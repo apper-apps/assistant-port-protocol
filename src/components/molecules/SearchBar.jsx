@@ -5,9 +5,10 @@ import { cn } from "@/utils/cn";
 
 const SearchBar = ({ 
   onSearch, 
-  placeholder = "Поиск...", 
+  placeholder = "Введите название товара для поиска поставщиков...", 
   className = "",
-  autoFocus = false 
+  autoFocus = false,
+  loading = false 
 }) => {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -27,18 +28,22 @@ const SearchBar = ({
   };
 
   return (
-    <motion.form 
+<motion.form 
       onSubmit={handleSubmit}
-      className={cn("relative", className)}
+      className={cn("relative max-w-2xl mx-auto", className)}
     >
       <div className={cn(
-        "relative flex items-center bg-white border rounded-lg transition-all duration-200",
-        isFocused ? "border-primary ring-2 ring-primary/20" : "border-gray-300"
+        "relative flex items-center bg-white border rounded-xl shadow-lg transition-all duration-300",
+        isFocused ? "border-primary ring-4 ring-primary/20 shadow-xl" : "border-gray-200 shadow-md",
+        loading && "opacity-75"
       )}>
         <ApperIcon 
           name="Search" 
-          size={18} 
-          className="absolute left-3 text-gray-400" 
+          size={20} 
+          className={cn(
+            "absolute left-4 transition-colors",
+            isFocused ? "text-primary" : "text-gray-400"
+          )} 
         />
         
         <input
@@ -49,20 +54,49 @@ const SearchBar = ({
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
           autoFocus={autoFocus}
-          className="w-full pl-10 pr-10 py-2.5 text-sm bg-transparent border-0 focus:outline-none placeholder-gray-400"
+          disabled={loading}
+          className="w-full pl-12 pr-16 py-4 text-base bg-transparent border-0 focus:outline-none placeholder-gray-400 disabled:cursor-not-allowed"
         />
         
-        {query && (
+        <div className="absolute right-4 flex items-center gap-2">
+          {loading && (
+            <motion.div
+              className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+          )}
+          
+          {query && !loading && (
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={handleClear}
+              className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
+            >
+              <ApperIcon name="X" size={16} />
+            </motion.button>
+          )}
+        </div>
+      </div>
+      
+      <div className="flex flex-wrap gap-2 mt-4 justify-center">
+        {["Электроника", "Одежда", "Дом и сад", "Авто", "Спорт"].map((suggestion) => (
           <motion.button
+            key={suggestion}
             type="button"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            onClick={handleClear}
-            className="absolute right-3 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              setQuery(suggestion);
+              onSearch?.(suggestion);
+            }}
+            className="px-3 py-1.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
           >
-            <ApperIcon name="X" size={16} />
+            {suggestion}
           </motion.button>
-        )}
+        ))}
       </div>
     </motion.form>
   );
